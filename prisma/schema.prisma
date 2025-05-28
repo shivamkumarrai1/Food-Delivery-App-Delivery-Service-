@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model DeliveryAgent {
+  id          Int     @id @default(autoincrement())
+  name        String
+  isAvailable Boolean @default(true)
+  deliveries  Delivery[]
+}
+
+model Delivery {
+  id             Int     @id @default(autoincrement())
+  orderId        Int     // Refer to orderId from Restaurant Service
+  status         String  @default("Pending") // e.g., Pending, Picked Up, Delivered
+  agentId        Int
+  deliveryAgent  DeliveryAgent @relation(fields: [agentId], references: [id])
+  createdAt      DateTime @default(now())
+}
